@@ -1,10 +1,3 @@
-import streamlit as st
-import time
-
-st.title("Cohérence cardiaque")
-
-onglet1, onglet2 = st.tabs(["Respiration", "Paramètres"])
-
 with onglet1:
     st.header("Exercice de respiration")
 
@@ -41,49 +34,34 @@ with onglet1:
         "#00AAFF"
     )
 
-animation_html = f"""
-<style>
-@keyframes respiration {{
-    0% {{
-        transform: scale(1);
+    # **ici le bloc animé**
+    animation_html = f"""
+    <style>
+    @keyframes respiration {{
+        0% {{ transform: scale(1); }}
+        50% {{ transform: scale(1.4); }}
+        100% {{ transform: scale(1); }}
     }}
-    50% {{
-        transform: scale(1.4);
+    .cercle {{
+        width: {taille}px;
+        height: {taille}px;
+        background-color: {couleur};
+        border-radius: 50%;
+        margin: 40px auto;
+        animation: respiration {inspire + expire + retenue}s infinite ease-in-out;
     }}
-    100% {{
-        transform: scale(1);
-    }}
-}}
+    </style>
+    <div class="cercle"></div>
+    """
+    st.markdown(animation_html, unsafe_allow_html=True)
 
-.cercle {{
-    width: {taille}px;
-    height: {taille}px;
-    background-color: {couleur};
-    border-radius: 50%;
-    margin: 40px auto;
-    animation: respiration {inspire + expire + retenue}s infinite ease-in-out;
-}}
-</style>
-
-<div class="cercle"></div>
-"""
-
-st.markdown(animation_html, unsafe_allow_html=True)
-
-
+    # **bouton Démarrer**
     if st.button("Démarrer"):
         st.write("Inspire")
         time.sleep(inspire)
-
         if retenue > 0:
             st.write("Retiens")
             time.sleep(retenue)
-
         st.write("Expire")
         time.sleep(expire)
-
         st.write("Cycle terminé")
-
-with onglet2:
-    st.header("Paramètres avancés")
-    st.write("Image de fond, musique, voix (plus tard).")
