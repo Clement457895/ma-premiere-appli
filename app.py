@@ -1,5 +1,6 @@
-    import streamlit as st
-    import time
+import streamlit as st
+import time
+
 
 st.title("Cohérence cardiaque")
 
@@ -27,8 +28,8 @@ with onglet2:
 with onglet1:
     st.header("Exercice de respiration")
 
-     total_cycle = inspire + retenue + expire
-    cycles = int(duree_totale*60 // total_cycle)
+    total_cycle = inspire + retenue + expire
+    cycles = int(duree_totale * 60 // total_cycle)
     cont = st.empty()
 
     html_code = f"""
