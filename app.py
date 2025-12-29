@@ -27,20 +27,11 @@ with onglet2:
 with onglet1:
     st.header("Exercice de respiration")
 
-    # Bouton Démarrer
-    if st.button("Démarrer"):
-        for _ in range(cycles):
-            st.markdown(f"<div class='cercle' style='background-color:{couleur};'>Inspire</div>", unsafe_allow_html=True)
-            time.sleep(inspire)
-            if retenue > 0:
-                st.markdown(f"<div class='cercle' style='background-color:{couleur};'>Retiens</div>", unsafe_allow_html=True)
-                time.sleep(retenue)
-            st.markdown(f"<div class='cercle' style='background-color:{couleur};'>Expire</div>", unsafe_allow_html=True)
-            time.sleep(expire)
-        st.markdown(f"<div class='cercle' style='background-color:{couleur};'>Cycle terminé</div>", unsafe_allow_html=True)
-        
-    # Rond initial + texte centré
-    st.markdown(f"""
+    # Création d'un conteneur vide
+    cercle = st.empty()
+
+    # Rond initial
+    cercle.markdown(f"""
     <style>
     .cercle {{
         width: {taille}px;
@@ -53,6 +44,94 @@ with onglet1:
         justify-content: center;
         font-size: 30px;
         color: white;
+    }}
+    </style>
+    <div class="cercle">Prêt ?</div>
+    """, unsafe_allow_html=True)
+
+    if st.button("Démarrer"):
+        for _ in range(cycles):
+            
+            # Inspire
+            cercle.markdown(f"""
+            <style>
+            .cercle {{
+                width: {taille*1.4}px;
+                height: {taille*1.4}px;
+                background-color: {couleur};
+                border-radius: 50%;
+                margin: 40px auto;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 30px;
+                color: white;
+            }}
+            </style>
+            <div class="cercle">Inspire</div>
+            """, unsafe_allow_html=True)
+            time.sleep(inspire)
+
+            # Retiens
+            if retenue > 0:
+                cercle.markdown(f"""
+                <style>
+                .cercle {{
+                    width: {taille*1.2}px;
+                    height: {taille*1.2}px;
+                    background-color: {couleur};
+                    border-radius: 50%;
+                    margin: 40px auto;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 30px;
+                    color: white;
+                }}
+                </style>
+                <div class="cercle">Retiens</div>
+                """, unsafe_allow_html=True)
+                time.sleep(retenue)
+
+            # Expire
+            cercle.markdown(f"""
+            <style>
+            .cercle {{
+                width: {taille}px;
+                height: {taille}px;
+                background-color: {couleur};
+                border-radius: 50%;
+                margin: 40px auto;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 30px;
+                color: white;
+            }}
+            </style>
+            <div class="cercle">Expire</div>
+            """, unsafe_allow_html=True)
+            time.sleep(expire)
+
+        # Fin du cycle
+        cercle.markdown(f"""
+        <style>
+        .cercle {{
+            width: {taille}px;
+            height: {taille}px;
+            background-color: {couleur};
+            border-radius: 50%;
+            margin: 40px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            color: white;
+        }}
+        </style>
+        <div class="cercle">Cycle terminé</div>
+        """, unsafe_allow_html=True)
+
     }}
     </style>
     <div class="cercle">Prêt ?</div>
