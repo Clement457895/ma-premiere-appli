@@ -1,4 +1,5 @@
 import streamlit as st
+import streamlit.components.v1 as components
 import time
 
 st.title("Cohérence cardiaque")
@@ -89,5 +90,6 @@ with onglet1:
         </script>
         """
 
-        cont.markdown(html_code, unsafe_allow_html=True)
+        components.html(html_code, height=500)
+
     
