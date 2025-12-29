@@ -1,7 +1,4 @@
-
-import streamlit as st :
-import time
-
+import streamlit as st
 st.title("Cohérence cardiaque")
 
 # Onglets
