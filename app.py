@@ -13,7 +13,7 @@ with onglet1:
     inspire = st.number_input("Temps d'inspiration (secondes)", min_value=1, max_value=10, value=4)
     retenue = st.number_input("Temps de rétention (secondes)", min_value=0, max_value=10, value=2)
     expire = st.number_input("Temps d'expiration (secondes)", min_value=1, max_value=10, value=6)
-with onglet1:
+    
     st.header("Exercice de respiration")
 
     # Temps de répétition
