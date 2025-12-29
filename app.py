@@ -3,47 +3,19 @@ import time
 
 st.title("Cohérence cardiaque")
 
-# Création des onglets
+# Onglets
 onglet1, onglet2 = st.tabs(["Respiration", "Paramètres"])
 
-# Onglet 1 : Exercice de respiration
+# Onglet Respiration
 with onglet1:
     st.header("Exercice de respiration")
 
-    # Paramètres de temps
-    inspire = st.number_input(
-        "Temps d'inspiration (secondes)",
-        min_value=1,
-        max_value=10,
-        value=4
-    )
+    inspire = st.number_input("Temps d'inspiration (secondes)", min_value=1, max_value=10, value=4)
+    retenue = st.number_input("Temps de rétention (secondes)", min_value=0, max_value=10, value=2)
+    expire = st.number_input("Temps d'expiration (secondes)", min_value=1, max_value=10, value=6)
 
-    retenue = st.number_input(
-        "Temps de rétention (secondes)",
-        min_value=0,
-        max_value=10,
-        value=2
-    )
-
-    expire = st.number_input(
-        "Temps d'expiration (secondes)",
-        min_value=1,
-        max_value=10,
-        value=6
-    )
-
-    # Paramètres visuels du rond
-    taille = st.slider(
-        "Taille du rond",
-        min_value=50,
-        max_value=300,
-        value=150
-    )
-
-    couleur = st.color_picker(
-        "Couleur du rond",
-        "#00AAFF"
-    )
+    taille = st.slider("Taille du rond", min_value=50, max_value=300, value=150)
+    couleur = st.color_picker("Couleur du rond", "#00AAFF")
 
     # Rond animé
     animation_html = f"""
@@ -66,7 +38,7 @@ with onglet1:
     """
     st.markdown(animation_html, unsafe_allow_html=True)
 
-    # Bouton Démarrer
+    # Bouton
     if st.button("Démarrer"):
         st.write("Inspire")
         time.sleep(inspire)
@@ -77,7 +49,7 @@ with onglet1:
         time.sleep(expire)
         st.write("Cycle terminé")
 
-# Onglet 2 : Paramètres avancés
+# Onglet Paramètres
 with onglet2:
     st.header("Paramètres avancés")
     st.write("Image de fond, musique, voix (plus tard).")
