@@ -27,7 +27,7 @@ with onglet2:
 with onglet1:
     st.header("Exercice de respiration")
 
-    total_cycle = inspire + retenue + expire
+     total_cycle = inspire + retenue + expire
     cycles = int(duree_totale*60 // total_cycle)
     cont = st.empty()
 
