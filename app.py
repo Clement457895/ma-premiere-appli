@@ -32,7 +32,7 @@ with onglet1:
     cycles = int(duree_totale * 60 // total_cycle)
     cont = st.empty()
     start = st.button("▶️ Démarrer")
-     if start:
+    if start:
         html_code = f"""
         <style>
         #cercle {{
