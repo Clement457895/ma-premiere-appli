@@ -29,7 +29,9 @@ with onglet1:
     total_cycle = inspire + retenue + expire
     cycles = int(duree_totale * 60 // total_cycle)
     cont = st.empty()
-
+    start = st.button("▶️ Démarrer")
+    
+    if start:
     html_code = f"""
     <div id="cercle" style="
         width:{taille}px;
@@ -63,43 +65,47 @@ with onglet1:
             return;
         }}
 
-        // Phase Inspire
+        // INSPIRE
         cercle.innerText = "Inspire";
-        cercle.style.width = (taille*1.4) + "px";
-        cercle.style.height = (taille*1.4) + "px";
-        setTimeout(() => {{
+        cercle.style.width = (taille * 1.4) + "px";
+        cercle.style.height = (taille * 1.4) + "px";
 
-            // Phase Retiens
+        setTimeout(() => {{
+            // RETIENS
             if (retenue > 0) {{
                 cercle.innerText = "Retiens";
-                cercle.style.width = (taille*1.2) + "px";
-                cercle.style.height = (taille*1.2) + "px";
+                cercle.style.width = (taille * 1.4) + "px";
+                cercle.style.height = (taille * 1.4) + "px";
+
                 setTimeout(() => {{
-                    // Phase Expire
+                    // EXPIRE
                     cercle.innerText = "Expire";
                     cercle.style.width = taille + "px";
                     cercle.style.height = taille + "px";
+
                     setTimeout(() => {{
-                        cycle += 1;
-                        runCycle(); // boucle suivante
+                        cycle++;
+                        runCycle();
                     }}, expire);
+
                 }}, retenue);
             }} else {{
-                // Si pas de retenue, on passe directement à Expire
+                // EXPIRE direct
                 cercle.innerText = "Expire";
                 cercle.style.width = taille + "px";
                 cercle.style.height = taille + "px";
+
                 setTimeout(() => {{
-                    cycle += 1;
+                    cycle++;
                     runCycle();
                 }}, expire);
             }}
-
         }}, inspire);
     }}
 
-    setTimeout(runCycle, 500);
+    runCycle();
     </script>
     """
-
     cont.markdown(html_code, unsafe_allow_html=True)
+
+    
