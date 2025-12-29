@@ -28,12 +28,9 @@ with onglet1:
     st.header("Exercice de respiration")
 
   total_cycle = inspire + retenue + expire
-    cycle_count = int(duree_totale*60 // total_cycle)
-
-    # Conteneur vide pour notre app
+    cycles = int(duree_totale*60 // total_cycle)
     cont = st.empty()
 
-    # HTML + CSS + JS pour animation fluide et texte dynamique
     html_code = f"""
     <div id="cercle" style="
         width:{taille}px;
@@ -46,6 +43,7 @@ with onglet1:
         align-items:center;
         font-size:30px;
         color:white;
+        transition: all 0.5s ease-in-out;
     ">Prêt ?</div>
 
     <script>
@@ -53,14 +51,12 @@ with onglet1:
     const inspire = {inspire} * 1000;
     const retenue = {retenue} * 1000;
     const expire = {expire} * 1000;
-    const cycles = {cycle_count};
+    const cycles = {cycles};
     const taille = {taille};
-    const couleur = "{couleur}";
 
-    let stage = 0; // 0=Inspire,1=Retiens,2=Expire
     let cycle = 0;
 
-    function step() {{
+    function runCycle() {{
         if (cycle >= cycles) {{
             cercle.innerText = "Cycle terminé";
             cercle.style.width = taille + "px";
@@ -68,34 +64,42 @@ with onglet1:
             return;
         }}
 
-        if (stage === 0) {{
-            cercle.innerText = "Inspire";
-            cercle.style.width = (taille*1.4) + "px";
-            cercle.style.height = (taille*1.4) + "px";
-            stage = 1;
-            setTimeout(step, inspire);
-        }} else if (stage === 1) {{
+        // Phase Inspire
+        cercle.innerText = "Inspire";
+        cercle.style.width = (taille*1.4) + "px";
+        cercle.style.height = (taille*1.4) + "px";
+        setTimeout(() => {{
+
+            // Phase Retiens
             if (retenue > 0) {{
                 cercle.innerText = "Retiens";
                 cercle.style.width = (taille*1.2) + "px";
                 cercle.style.height = (taille*1.2) + "px";
-                setTimeout(step, retenue);
+                setTimeout(() => {{
+                    // Phase Expire
+                    cercle.innerText = "Expire";
+                    cercle.style.width = taille + "px";
+                    cercle.style.height = taille + "px";
+                    setTimeout(() => {{
+                        cycle += 1;
+                        runCycle(); // boucle suivante
+                    }}, expire);
+                }}, retenue);
             }} else {{
-                stage = 2;
-                step();
+                // Si pas de retenue, on passe directement à Expire
+                cercle.innerText = "Expire";
+                cercle.style.width = taille + "px";
+                cercle.style.height = taille + "px";
+                setTimeout(() => {{
+                    cycle += 1;
+                    runCycle();
+                }}, expire);
             }}
-            stage = 2;
-        }} else if (stage === 2) {{
-            cercle.innerText = "Expire";
-            cercle.style.width = taille + "px";
-            cercle.style.height = taille + "px";
-            stage = 0;
-            cycle += 1;
-            setTimeout(step, expire);
-        }}
+
+        }}, inspire);
     }}
 
-    setTimeout(step, 500); // démarre après 0.5s
+    setTimeout(runCycle, 500);
     </script>
     """
 
