@@ -21,6 +21,24 @@ with onglet2:
     # Calcul nombre de cycles
     cycles = int(duree_totale * 60 // (inspire + retenue + expire))
 
+
+
+# -------------------- Onglet Respiration --------------------
+with onglet1:
+    st.header("Exercice de respiration")
+
+    # Bouton Démarrer
+    if st.button("Démarrer"):
+        for _ in range(cycles):
+            st.markdown(f"<div class='cercle' style='background-color:{couleur};'>Inspire</div>", unsafe_allow_html=True)
+            time.sleep(inspire)
+            if retenue > 0:
+                st.markdown(f"<div class='cercle' style='background-color:{couleur};'>Retiens</div>", unsafe_allow_html=True)
+                time.sleep(retenue)
+            st.markdown(f"<div class='cercle' style='background-color:{couleur};'>Expire</div>", unsafe_allow_html=True)
+            time.sleep(expire)
+        st.markdown(f"<div class='cercle' style='background-color:{couleur};'>Cycle terminé</div>", unsafe_allow_html=True)
+        
     # Rond initial + texte centré
     st.markdown(f"""
     <style>
@@ -39,25 +57,3 @@ with onglet2:
     </style>
     <div class="cercle">Prêt ?</div>
     """, unsafe_allow_html=True)
-
-
-# -------------------- Onglet Respiration --------------------
-with onglet1:
-    st.header("Exercice de respiration")
-
-    # Bouton Démarrer
-    if st.button("Démarrer"):
-        for _ in range(cycles):
-            st.markdown(f"<div class='cercle' style='background-color:{couleur};'>Inspire</div>", unsafe_allow_html=True)
-            time.sleep(inspire)
-            if retenue > 0:
-                st.markdown(f"<div class='cercle' style='background-color:{couleur};'>Retiens</div>", unsafe_allow_html=True)
-                time.sleep(retenue)
-            st.markdown(f"<div class='cercle' style='background-color:{couleur};'>Expire</div>", unsafe_allow_html=True)
-            time.sleep(expire)
-        st.markdown(f"<div class='cercle' style='background-color:{couleur};'>Cycle terminé</div>", unsafe_allow_html=True)
-
-# -------------------- Onglet Paramètres --------------------
-with onglet2:
-    st.header("Paramètres avancés")
-    st.write("Ici on mettra plus tard image de fond, musique et voix.")
