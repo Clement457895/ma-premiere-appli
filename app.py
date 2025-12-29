@@ -32,21 +32,24 @@ with onglet1:
     cycles = int(duree_totale * 60 // total_cycle)
     cont = st.empty()
     start = st.button("▶️ Démarrer")
-    if start :
+     if start:
         html_code = f"""
-        <div id="cercle" style="
-            width:{taille}px;
-            height:{taille}px;
-            background-color:{couleur};
-            border-radius:50%;
-            margin:50px auto;
-            display:flex;
-            justify-content:center;
-            align-items:center;
-            font-size:30px;
-            color:white;
-            transition: all 1s linear;
-        ">Prêt ?</div>
+        <style>
+        #cercle {{
+            width: {taille}px;
+            height: {taille}px;
+            background-color: {couleur};
+            border-radius: 50%;
+            margin: 50px auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 30px;
+            color: white;
+        }}
+        </style>
+
+        <div id="cercle">Prêt ?</div>
 
         <script>
         const cercle = document.getElementById("cercle");
@@ -56,22 +59,32 @@ with onglet1:
         const cycles = {cycles};
         const taille = {taille};
 
+        function setTransition(ms) {{
+            cercle.style.transition = `width ${ms}ms linear, height ${ms}ms linear`;
+        }}
+
         let cycle = 0;
 
         function runCycle() {{
-            if (cycle >= cycles) {{
+            if(cycle >= cycles) {{
                 cercle.innerText = "Cycle terminé";
                 return;
             }}
 
+            // Inspire
+            setTransition(inspire);
             cercle.innerText = "Inspire";
-            cercle.style.width = (taille * 1.4) + "px";
-            cercle.style.height = (taille * 1.4) + "px";
+            cercle.style.width = (taille*1.4) + "px";
+            cercle.style.height = (taille*1.4) + "px";
 
             setTimeout(() => {{
+                // Retiens
+                setTransition(0);
                 cercle.innerText = "Retiens";
 
                 setTimeout(() => {{
+                    // Expire
+                    setTransition(expire);
                     cercle.innerText = "Expire";
                     cercle.style.width = taille + "px";
                     cercle.style.height = taille + "px";
@@ -80,16 +93,11 @@ with onglet1:
                         cycle++;
                         runCycle();
                     }}, expire);
-
                 }}, retenue);
-
             }}, inspire);
         }}
 
         runCycle();
         </script>
         """
-
         components.html(html_code, height=500)
-
-    
