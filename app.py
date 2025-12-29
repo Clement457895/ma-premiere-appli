@@ -1,4 +1,4 @@
-import streamlit as st
+    import streamlit as st
 import time
 
 st.title("Cohérence cardiaque")
@@ -27,29 +27,76 @@ with onglet2:
 with onglet1:
     st.header("Exercice de respiration")
 
-     # Animation CSS seule, texte + rond animés
-    st.markdown(f"""
-    <style>
-    @keyframes respiration {{
-        0% {{ transform: scale(1); }}
-        25% {{ transform: scale(1.4); }}
-        50% {{ transform: scale(1); }}
-        75% {{ transform: scale(1.2); }}
-        100% {{ transform: scale(1); }}
+  total_cycle = inspire + retenue + expire
+    cycle_count = int(duree_totale*60 // total_cycle)
+
+    # Conteneur vide pour notre app
+    cont = st.empty()
+
+    # HTML + CSS + JS pour animation fluide et texte dynamique
+    html_code = f"""
+    <div id="cercle" style="
+        width:{taille}px;
+        height:{taille}px;
+        background-color:{couleur};
+        border-radius:50%;
+        margin:50px auto;
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        font-size:30px;
+        color:white;
+    ">Prêt ?</div>
+
+    <script>
+    const cercle = document.getElementById("cercle");
+    const inspire = {inspire} * 1000;
+    const retenue = {retenue} * 1000;
+    const expire = {expire} * 1000;
+    const cycles = {cycle_count};
+    const taille = {taille};
+    const couleur = "{couleur}";
+
+    let stage = 0; // 0=Inspire,1=Retiens,2=Expire
+    let cycle = 0;
+
+    function step() {{
+        if (cycle >= cycles) {{
+            cercle.innerText = "Cycle terminé";
+            cercle.style.width = taille + "px";
+            cercle.style.height = taille + "px";
+            return;
+        }}
+
+        if (stage === 0) {{
+            cercle.innerText = "Inspire";
+            cercle.style.width = (taille*1.4) + "px";
+            cercle.style.height = (taille*1.4) + "px";
+            stage = 1;
+            setTimeout(step, inspire);
+        }} else if (stage === 1) {{
+            if (retenue > 0) {{
+                cercle.innerText = "Retiens";
+                cercle.style.width = (taille*1.2) + "px";
+                cercle.style.height = (taille*1.2) + "px";
+                setTimeout(step, retenue);
+            }} else {{
+                stage = 2;
+                step();
+            }}
+            stage = 2;
+        }} else if (stage === 2) {{
+            cercle.innerText = "Expire";
+            cercle.style.width = taille + "px";
+            cercle.style.height = taille + "px";
+            stage = 0;
+            cycle += 1;
+            setTimeout(step, expire);
+        }}
     }}
-    .cercle {{
-        width: {taille}px;
-        height: {taille}px;
-        background-color: {couleur};
-        border-radius: 50%;
-        margin: 40px auto;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 30px;
-        color: white;
-        animation: respiration {inspire+retenue+expire}s infinite ease-in-out;
-    }}
-    </style>
-    <div class="cercle">Inspire → Retiens → Expire</div>
-    """, unsafe_allow_html=True)
+
+    setTimeout(step, 500); // démarre après 0.5s
+    </script>
+    """
+
+    cont.markdown(html_code, unsafe_allow_html=True)
