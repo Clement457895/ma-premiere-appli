@@ -17,14 +17,7 @@ with onglet2:
     taille = st.slider("Taille du rond", min_value=50, max_value=300, value=150, key="taille")
     couleur = st.color_picker("Couleur du rond", "#00AAFF", key="couleur")
     duree_totale = st.number_input("Durée totale (minutes)", min_value=1, max_value=60, value=5, key="duree")
-
-# -------------------- Onglet Respiration --------------------
-with onglet1:
-    st.header("Exercice de respiration")
-
-
-
-
+    
     # Calcul nombre de cycles
     cycles = int(duree_totale * 60 // (inspire + retenue + expire))
 
@@ -46,6 +39,11 @@ with onglet1:
     </style>
     <div class="cercle">Prêt ?</div>
     """, unsafe_allow_html=True)
+
+
+# -------------------- Onglet Respiration --------------------
+with onglet1:
+    st.header("Exercice de respiration")
 
     # Bouton Démarrer
     if st.button("Démarrer"):
