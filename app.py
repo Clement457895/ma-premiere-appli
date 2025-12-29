@@ -32,53 +32,45 @@ with onglet1:
     start = st.button("▶️ Démarrer")
     
     if start:
-    html_code = f"""
-    <div id="cercle" style="
-        width:{taille}px;
-        height:{taille}px;
-        background-color:{couleur};
-        border-radius:50%;
-        margin:50px auto;
-        display:flex;
-        justify-content:center;
-        align-items:center;
-        font-size:30px;
-        color:white;
-        transition: all 0.5s ease-in-out;
-    ">Prêt ?</div>
+        html_code = f"""
+        <div id="cercle" style="
+            width:{taille}px;
+            height:{taille}px;
+            background-color:{couleur};
+            border-radius:50%;
+            margin:50px auto;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            font-size:30px;
+            color:white;
+            transition: all 1s linear;
+        ">Prêt ?</div>
 
-    <script>
-    const cercle = document.getElementById("cercle");
-    const inspire = {inspire} * 1000;
-    const retenue = {retenue} * 1000;
-    const expire = {expire} * 1000;
-    const cycles = {cycles};
-    const taille = {taille};
+        <script>
+        const cercle = document.getElementById("cercle");
+        const inspire = {inspire} * 1000;
+        const retenue = {retenue} * 1000;
+        const expire = {expire} * 1000;
+        const cycles = {cycles};
+        const taille = {taille};
 
-    let cycle = 0;
+        let cycle = 0;
 
-    function runCycle() {{
-        if (cycle >= cycles) {{
-            cercle.innerText = "Cycle terminé";
-            cercle.style.width = taille + "px";
-            cercle.style.height = taille + "px";
-            return;
-        }}
+        function runCycle() {{
+            if (cycle >= cycles) {{
+                cercle.innerText = "Cycle terminé";
+                return;
+            }}
 
-        // INSPIRE
-        cercle.innerText = "Inspire";
-        cercle.style.width = (taille * 1.4) + "px";
-        cercle.style.height = (taille * 1.4) + "px";
+            cercle.innerText = "Inspire";
+            cercle.style.width = (taille * 1.4) + "px";
+            cercle.style.height = (taille * 1.4) + "px";
 
-        setTimeout(() => {{
-            // RETIENS
-            if (retenue > 0) {{
+            setTimeout(() => {{
                 cercle.innerText = "Retiens";
-                cercle.style.width = (taille * 1.4) + "px";
-                cercle.style.height = (taille * 1.4) + "px";
 
                 setTimeout(() => {{
-                    // EXPIRE
                     cercle.innerText = "Expire";
                     cercle.style.width = taille + "px";
                     cercle.style.height = taille + "px";
@@ -89,23 +81,13 @@ with onglet1:
                     }}, expire);
 
                 }}, retenue);
-            }} else {{
-                // EXPIRE direct
-                cercle.innerText = "Expire";
-                cercle.style.width = taille + "px";
-                cercle.style.height = taille + "px";
 
-                setTimeout(() => {{
-                    cycle++;
-                    runCycle();
-                }}, expire);
-            }}
-        }}, inspire);
-    }}
+            }}, inspire);
+        }}
 
-    runCycle();
-    </script>
-    """
-    cont.markdown(html_code, unsafe_allow_html=True)
+        runCycle();
+        </script>
+        """
 
+        cont.markdown(html_code, unsafe_allow_html=True)
     
