@@ -1,6 +1,16 @@
+import streamlit as st
+import time
+
+st.title("Cohérence cardiaque")
+
+# Création des onglets
+onglet1, onglet2 = st.tabs(["Respiration", "Paramètres"])
+
+# Onglet 1 : Exercice de respiration
 with onglet1:
     st.header("Exercice de respiration")
 
+    # Paramètres de temps
     inspire = st.number_input(
         "Temps d'inspiration (secondes)",
         min_value=1,
@@ -22,6 +32,7 @@ with onglet1:
         value=6
     )
 
+    # Paramètres visuels du rond
     taille = st.slider(
         "Taille du rond",
         min_value=50,
@@ -34,7 +45,7 @@ with onglet1:
         "#00AAFF"
     )
 
-    # **ici le bloc animé**
+    # Rond animé
     animation_html = f"""
     <style>
     @keyframes respiration {{
@@ -48,14 +59,14 @@ with onglet1:
         background-color: {couleur};
         border-radius: 50%;
         margin: 40px auto;
-        animation: respiration {inspire + expire + retenue}s infinite ease-in-out;
+        animation: respiration {inspire + retenue + expire}s infinite ease-in-out;
     }}
     </style>
     <div class="cercle"></div>
     """
     st.markdown(animation_html, unsafe_allow_html=True)
 
-    # **bouton Démarrer**
+    # Bouton Démarrer
     if st.button("Démarrer"):
         st.write("Inspire")
         time.sleep(inspire)
@@ -65,3 +76,8 @@ with onglet1:
         st.write("Expire")
         time.sleep(expire)
         st.write("Cycle terminé")
+
+# Onglet 2 : Paramètres avancés
+with onglet2:
+    st.header("Paramètres avancés")
+    st.write("Image de fond, musique, voix (plus tard).")
