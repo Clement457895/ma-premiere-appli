@@ -60,7 +60,7 @@ with onglet1:
         const taille = {taille};
 
         function setTransition(ms) {{
-            cercle.style.transition = `width ${ms}ms linear, height ${ms}ms linear`;
+            cercle.style.transition = "width " + ms + "ms linear, height " + ms + "ms linear";
         }}
 
         let cycle = 0;
