@@ -27,26 +27,25 @@ with onglet2:
 with onglet1:
     st.header("Exercice de respiration")
 
-    start = st.button("▶️ Démarrer")
     total_cycle = inspire + retenue + expire
     cycles = int(duree_totale * 60 // total_cycle)
     cont = st.empty()
-    
-    if start:
-        html_code = f"""
-        <div id="cercle" style="
-            width:{taille}px;
-            height:{taille}px;
-            background-color:{couleur};
-            border-radius:50%;
-            margin:50px auto;
-            display:flex;
-            justify-content:center;
-            align-items:center;
-            font-size:30px;
-            color:white;
-            transition: all 1s linear;
-        ">Prêt ?</div>
+    start = st.button("▶️ Démarrer")
+        if start:
+            html_code = f"""
+            <div id="cercle" style="
+                width:{taille}px;
+                height:{taille}px;
+                background-color:{couleur};
+                border-radius:50%;
+                margin:50px auto;
+                display:flex;
+                justify-content:center;
+                align-items:center;
+                font-size:30px;
+                color:white;
+                transition: all 1s linear;
+            ">Prêt ?</div>
 
         <script>
         const cercle = document.getElementById("cercle");
