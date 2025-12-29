@@ -20,7 +20,15 @@ with onglet2:
 with onglet1:
     st.header("Exercice de respiration")
 
-    # Calcul du nombre de cycles
+    # Paramètres du rond et temps
+    inspire = st.number_input("Temps d'inspiration (secondes)", min_value=1, max_value=10, value=4)
+    retenue = st.number_input("Temps de rétention (secondes)", min_value=0, max_value=10, value=2)
+    expire = st.number_input("Temps d'expiration (secondes)", min_value=1, max_value=10, value=6)
+    taille = st.slider("Taille du rond", min_value=50, max_value=300, value=150)
+    couleur = st.color_picker("Couleur du rond", "#00AAFF")
+    duree_totale = st.number_input("Durée totale (minutes)", min_value=1, max_value=60, value=5)
+
+    # Calcul nombre de cycles
     cycles = int(duree_totale * 60 // (inspire + retenue + expire))
 
     # Rond initial + texte centré
@@ -42,7 +50,7 @@ with onglet1:
     <div class="cercle">Prêt ?</div>
     """, unsafe_allow_html=True)
 
-    # Bouton unique Démarrer
+    # Bouton Démarrer
     if st.button("Démarrer"):
         for _ in range(cycles):
             st.markdown(f"<div class='cercle' style='background-color:{couleur};'>Inspire</div>", unsafe_allow_html=True)
@@ -54,3 +62,7 @@ with onglet1:
             time.sleep(expire)
         st.markdown(f"<div class='cercle' style='background-color:{couleur};'>Cycle terminé</div>", unsafe_allow_html=True)
 
+# -------------------- Onglet Paramètres --------------------
+with onglet2:
+    st.header("Paramètres avancés")
+    st.write("Ici on mettra plus tard image de fond, musique et voix.")
