@@ -112,44 +112,47 @@ with onglet_respiration:
         }}
 
         // -------------------- VOIX (douce et française) --------------------
-        function speak(text) {
-            if (!voix) return;
+        function speak(text) {{
+            if (voix === false) return;
         
             const utterance = new SpeechSynthesisUtterance(text);
         
             const voices = speechSynthesis.getVoices();
-            const frenchVoice = voices.find(v =>
-                v.lang.startsWith("fr") && !v.name.toLowerCase().includes("robot")
-            );
+            let frenchVoice = null;
         
-            if (frenchVoice) {
+            for (let i = 0; i < voices.length; i++) {{
+                if (voices[i].lang.startsWith("fr")) {{
+                    frenchVoice = voices[i];
+                    break;
+                }}
+            }}
+        
+            if (frenchVoice !== null) {{
                 utterance.voice = frenchVoice;
-            }
+            }}
         
-            utterance.rate = 0.8;   // plus lent
-            utterance.pitch = 0.9;  // plus grave
+            utterance.rate = 0.8;
+            utterance.pitch = 0.9;
             utterance.volume = 1;
         
             speechSynthesis.cancel();
             speechSynthesis.speak(utterance);
-        }
-                
-        // -------------------- AFFICHAGE TEXTE + VOIX --------------------
-        function showPhase(text) {
-            phaseText.style.opacity = 0;
-            speechSynthesis.getVoices();
+        }}
         
-            setTimeout(() => {
+        // -------------------- AFFICHAGE TEXTE + VOIX --------------------
+        function showPhase(text) {{
+            phaseText.style.opacity = 0;
+        
+            setTimeout(() => {{
                 phaseText.innerText = text;
                 phaseText.style.opacity = 1;
         
-                // ---- voix uniquement si autorisée ----
-                if (voix && text !== "Cycle terminé") {
+                if (voix === true && text !== "Cycle terminé") {{
                     speak(text);
-                }
-        
-            }, 200);
-        }
+                }}
+            }}, 200);
+        }}
+
 
         // ---------- ANIMATION ----------
         function animate(timestamp) {{
