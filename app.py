@@ -90,7 +90,7 @@ with onglet1:
             const progress = Math.min(elapsed / duration, 1);
             const eased = easeInOutSine(progress);
             const scale = startScale + (endScale - startScale) * eased;
-            cercle.style.transform = `scale(${scale})`;
+            cercle.style.transform = "scale(" + scale + ")";
 
             if (progress >= 1) {{
                 if (phase === "inspire") {{
