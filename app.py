@@ -87,6 +87,17 @@ with onglet_respiration:
         }}
         </style>
 
+        // ---------- SONS ----------
+        function playSound(phase) {
+            if (!sonsActifs) return;
+        
+            let audio = document.getElementById("sound-" + phase);
+            if (audio) {
+                audio.currentTime = 0;
+                audio.play();
+            }
+        }
+
         <!-- ---------- AUDIO ---------- -->
         <audio id="snd-inspire" src="sounds/inspire.mp3"></audio>
         <audio id="snd-retiens" src="sounds/retiens.mp3"></audio>
