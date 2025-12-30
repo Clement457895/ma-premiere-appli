@@ -144,4 +144,4 @@ with onglet1:
         }}, 100);
         </script>
         """
-        cont.html(html_code, height=500)
+       components.html(html_code, height=500)
