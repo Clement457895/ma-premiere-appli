@@ -27,11 +27,10 @@ with onglet2:
 # -------------------- Onglet Respiration --------------------
 with onglet1:
     st.header("Exercice de respiration")
-
-    total_cycle = inspire + retenue + expire
-    cycles = int(duree_totale * 60 // total_cycle)
-    cont = st.empty()
+    
     start = st.button("▶️ Démarrer")
+    cont = st.empty()
+
     if start:
         html_code = f"""
         <style>
@@ -48,7 +47,6 @@ with onglet1:
             color: white;
         }}
         </style>
-
         <div id="cercle">Prêt ?</div>
 
         <script>
@@ -59,45 +57,56 @@ with onglet1:
         const cycles = {cycles};
         const taille = {taille};
 
-        function setTransition(ms) {{
-            cercle.style.transition = "width " + ms + "ms linear, height " + ms + "ms linear";
-        }}
-
         let cycle = 0;
+        let startTime = null;
+        let phase = "inspire"; // inspire, retenue, expire
+        let phaseDur = inspire;
+        let startSize = taille;
+        let endSize = taille * 1.4;
 
-        function runCycle() {{
-            if(cycle >= cycles) {{
-                cercle.innerText = "Cycle terminé";
-                return;
-            }}
+        function animate(timestamp) {{
+            if (!startTime) startTime = timestamp;
+            const elapsed = timestamp - startTime;
+            let progress = Math.min(elapsed / phaseDur, 1);
+            
+            // taille proportionnelle au temps
+            const size = startSize + (endSize - startSize) * progress;
+            cercle.style.width = size + "px";
+            cercle.style.height = size + "px";
 
-            // Inspire
-            setTransition(inspire);
-            cercle.innerText = "Inspire";
-            cercle.style.width = (taille*1.4) + "px";
-            cercle.style.height = (taille*1.4) + "px";
-
-            setTimeout(() => {{
-                // Retiens
-                setTransition(0);
-                cercle.innerText = "Retiens";
-
-                setTimeout(() => {{
-                    // Expire
-                    setTransition(expire);
+            if (progress >= 1) {{
+                // passer à la phase suivante
+                if (phase === "inspire") {{
+                    phase = "retenue";
+                    phaseDur = retenue;
+                    startSize = taille * 1.4;
+                    endSize = taille * 1.4;
+                    cercle.innerText = "Retiens";
+                }} else if (phase === "retenue") {{
+                    phase = "expire";
+                    phaseDur = expire;
+                    startSize = taille * 1.4;
+                    endSize = taille;
                     cercle.innerText = "Expire";
-                    cercle.style.width = taille + "px";
-                    cercle.style.height = taille + "px";
-
-                    setTimeout(() => {{
-                        cycle++;
-                        runCycle();
-                    }}, expire);
-                }}, retenue);
-            }}, inspire);
+                }} else if (phase === "expire") {{
+                    cycle++;
+                    if (cycle >= cycles) {{
+                        cercle.innerText = "Cycle terminé";
+                        return;
+                    }}
+                    phase = "inspire";
+                    phaseDur = inspire;
+                    startSize = taille;
+                    endSize = taille * 1.4;
+                    cercle.innerText = "Inspire";
+                }}
+                startTime = timestamp;
+            }}
+            requestAnimationFrame(animate);
         }}
 
-        runCycle();
+        cercle.innerText = "Inspire";
+        requestAnimationFrame(animate);
         </script>
         """
         components.html(html_code, height=500)
