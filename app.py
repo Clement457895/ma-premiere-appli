@@ -45,6 +45,7 @@ with onglet1:
             align-items: center;
             font-size: 30px;
             color: white;
+            transition: opacity 0.5s ease-in-out;
         }}
         </style>
         <div id="cercle">Prêt ?</div>
@@ -58,55 +59,55 @@ with onglet1:
         const taille = {taille};
 
         let cycle = 0;
-        let startTime = null;
         let phase = "inspire"; // inspire, retenue, expire
-        let phaseDur = inspire;
+        let startTime = null;
         let startSize = taille;
         let endSize = taille * 1.4;
+
+        function easeInOutSine(t) {{
+            return -(Math.cos(Math.PI * t) - 1)/2;
+        }}
 
         function animate(timestamp) {{
             if (!startTime) startTime = timestamp;
             const elapsed = timestamp - startTime;
-            let progress = Math.min(elapsed / phaseDur, 1);
-            
-            // taille proportionnelle au temps
-            const size = startSize + (endSize - startSize) * progress;
+            const progress = Math.min(elapsed / (phase === "inspire" ? inspire : phase === "retenue" ? retenue : expire), 1);
+            const eased = easeInOutSine(progress);
+            const size = startSize + (endSize - startSize) * eased;
             cercle.style.width = size + "px";
             cercle.style.height = size + "px";
 
             if (progress >= 1) {{
-                // passer à la phase suivante
+                // Changer de phase
                 if (phase === "inspire") {{
                     phase = "retenue";
-                    phaseDur = retenue;
-                    startSize = taille * 1.4;
-                    endSize = taille * 1.4;
+                    startSize = taille*1.4;
+                    endSize = taille*1.4;
                     cercle.innerText = "Retiens";
                 }} else if (phase === "retenue") {{
                     phase = "expire";
-                    phaseDur = expire;
-                    startSize = taille * 1.4;
+                    startSize = taille*1.4;
                     endSize = taille;
                     cercle.innerText = "Expire";
-                }} else if (phase === "expire") {{
+                }} else {{
                     cycle++;
                     if (cycle >= cycles) {{
                         cercle.innerText = "Cycle terminé";
                         return;
                     }}
                     phase = "inspire";
-                    phaseDur = inspire;
                     startSize = taille;
-                    endSize = taille * 1.4;
+                    endSize = taille*1.4;
                     cercle.innerText = "Inspire";
                 }}
                 startTime = timestamp;
             }}
+
             requestAnimationFrame(animate);
         }}
 
-        cercle.innerText = "Inspire";
-        requestAnimationFrame(animate);
+        cercle.style.opacity = 0;
+        setTimeout(() => {{ cercle.style.opacity = 1; cercle.innerText="Inspire"; requestAnimationFrame(animate); }}, 100);
         </script>
         """
         components.html(html_code, height=500)
