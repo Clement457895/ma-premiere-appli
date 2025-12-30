@@ -45,6 +45,7 @@ with onglet1:
             align-items: center;
             font-size: 30px;
             color: white;
+            transform-origin: center;
         }}
         .phase-text {{
             opacity: 0;
@@ -63,13 +64,12 @@ with onglet1:
         const retenue = {retenue} * 1000;
         const expire = {expire} * 1000;
         const cycles = {cycles};
-        const taille = {taille};
 
         let cycle = 0;
-        let phase = "inspire"; // inspire, retenue, expire
+        let phase = "inspire";
         let startTime = null;
-        let startSize = taille;
-        let endSize = taille * 1.4;
+        let startScale = 1;
+        let endScale = 1.4;
 
         function easeInOutSine(t) {{
             return -(Math.cos(Math.PI * t) - 1)/2;
@@ -89,21 +89,19 @@ with onglet1:
             const elapsed = timestamp - startTime;
             const progress = Math.min(elapsed / duration, 1);
             const eased = easeInOutSine(progress);
-            const size = startSize + (endSize - startSize) * eased;
-            cercle.style.width = size + "px";
-            cercle.style.height = size + "px";
+            const scale = startScale + (endScale - startScale) * eased;
+            cercle.style.transform = `scale(${scale})`;
 
             if (progress >= 1) {{
-                // Changer de phase
                 if (phase === "inspire") {{
                     phase = "retenue";
-                    startSize = taille*1.4;
-                    endSize = taille*1.4;
+                    startScale = 1.4;
+                    endScale = 1.4;
                     showPhase("Retiens");
                 }} else if (phase === "retenue") {{
                     phase = "expire";
-                    startSize = taille*1.4;
-                    endSize = taille;
+                    startScale = 1.4;
+                    endScale = 1;
                     showPhase("Expire");
                 }} else {{
                     cycle++;
@@ -112,13 +110,12 @@ with onglet1:
                         return;
                     }}
                     phase = "inspire";
-                    startSize = taille;
-                    endSize = taille*1.4;
+                    startScale = 1;
+                    endScale = 1.4;
                     showPhase("Inspire");
                 }}
                 startTime = timestamp;
             }}
-
             requestAnimationFrame(animate);
         }}
 
