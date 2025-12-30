@@ -27,7 +27,8 @@ with onglet2:
     # Calcul nombre de cycles
     cycles = int(duree_totale * 60 // (inspire + retenue + expire))
 
-
+    # --- Option voix ---
+    voix = st.checkbox("Voix", value=True, key="voix")
 
 # -------------------- Onglet Respiration --------------------
 with onglet1:
@@ -38,7 +39,7 @@ with onglet1:
     cont = st.empty()
 
     if start:
-            # ---- HTML + CSS + JS ----
+        # ---- HTML + CSS + JS ----
         html_code = f"""
         <style>
         #cercle {{
@@ -72,6 +73,7 @@ with onglet1:
         const retenue = {retenue} * 1000;
         const expire = {expire} * 1000;
         const cycles = {cycles};
+        const voix = {str(voix).lower()};  // true ou false
 
         let cycle = 0;
         let phase = "inspire";
@@ -90,6 +92,11 @@ with onglet1:
             setTimeout(() => {{
                 phaseText.innerText = text;
                 phaseText.style.opacity = 1;
+                // ---- Voix ----
+                if (voix && text !== "Cycle terminé") {{
+                    const utterance = new SpeechSynthesisUtterance(text);
+                    speechSynthesis.speak(utterance);
+                }}
             }}, 200);
         }}
 
@@ -108,7 +115,7 @@ with onglet1:
                     phase = "retenue";
                     startScale = 1.4;
                     endScale = 1.4;
-                    showPhase("Retiens");
+                    if(retenue>0) showPhase("Retiens");
                 }} else if (phase === "retenue") {{
                     phase = "expire";
                     startScale = 1.4;
@@ -137,4 +144,4 @@ with onglet1:
         }}, 100);
         </script>
         """
-        components.html(html_code, height=500)
+        cont.html(html_code, height=500)
