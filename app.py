@@ -41,6 +41,7 @@ with onglet1:
     if start:
         # ---- HTML + CSS + JS ----
         html_code = f"""
+        components.html(html_code, height=500)
         <style>
         #cercle {{
             width: {taille}px;
@@ -144,4 +145,4 @@ with onglet1:
         }}, 100);
         </script>
         """
-       components.html(html_code, height=500)
+        cont.html(html_code, height=500)
