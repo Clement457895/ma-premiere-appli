@@ -2,21 +2,26 @@ import streamlit as st
 import streamlit.components.v1 as components
 import time
 
+# ---- Titre de l'application ----
 st.title("Cohérence cardiaque")
 
-# Onglets
+# ---- Onglets ----
 onglet1, onglet2 = st.tabs(["Respiration", "Paramètres"])
 
 # -------------------- Onglet Paramètres --------------------
 with onglet2:
     st.header("Paramètres avancés")
     
-    # Paramètres du rond et temps
+    # Paramètres de respiration
     inspire = st.number_input("Temps d'inspiration (secondes)", min_value=1, max_value=10, value=4, key="inspire")
     retenue = st.number_input("Temps de rétention (secondes)", min_value=0, max_value=10, value=2, key="retenue")
     expire = st.number_input("Temps d'expiration (secondes)", min_value=1, max_value=10, value=6, key="expire")
+
+    # Paramètres du cercle
     taille = st.slider("Taille du rond", min_value=50, max_value=300, value=150, key="taille")
     couleur = st.color_picker("Couleur du rond", "#00AAFF", key="couleur")
+
+    # Durée totale
     duree_totale = st.number_input("Durée totale (minutes)", min_value=1, max_value=60, value=5, key="duree")
     
     # Calcul nombre de cycles
@@ -27,11 +32,13 @@ with onglet2:
 # -------------------- Onglet Respiration --------------------
 with onglet1:
     st.header("Exercice de respiration")
-    
+
+    # ---- Bouton démarrer ----
     start = st.button("▶️ Démarrer")
     cont = st.empty()
 
     if start:
+            # ---- HTML + CSS + JS ----
         html_code = f"""
         <style>
         #cercle {{
@@ -58,6 +65,7 @@ with onglet1:
         </div>
 
         <script>
+        // ---- Variables JS ----
         const cercle = document.getElementById("cercle");
         const phaseText = document.getElementById("phase");
         const inspire = {inspire} * 1000;
@@ -71,10 +79,12 @@ with onglet1:
         let startScale = 1;
         let endScale = 1.4;
 
+        // ---- Fonction easing ----
         function easeInOutSine(t) {{
             return -(Math.cos(Math.PI * t) - 1)/2;
         }}
 
+        // ---- Affichage du texte ----
         function showPhase(text) {{
             phaseText.style.opacity = 0;
             setTimeout(() => {{
@@ -83,6 +93,7 @@ with onglet1:
             }}, 200);
         }}
 
+        // ---- Animation du cercle ----
         function animate(timestamp) {{
             if (!startTime) startTime = timestamp;
             const duration = phase === "inspire" ? inspire : phase === "retenue" ? retenue : expire;
@@ -119,6 +130,7 @@ with onglet1:
             requestAnimationFrame(animate);
         }}
 
+        // ---- Lancer l'animation ----
         setTimeout(() => {{
             showPhase("Inspire");
             requestAnimationFrame(animate);
