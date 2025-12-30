@@ -111,20 +111,45 @@ with onglet_respiration:
             return -(Math.cos(Math.PI * t) - 1) / 2;
         }}
 
-        // ---------- TEXTE / VOIX ----------
-        function showPhase(text) {{
+        // -------------------- VOIX (douce et française) --------------------
+        function speak(text) {
+            if (!voix) return;
+        
+            const utterance = new SpeechSynthesisUtterance(text);
+        
+            const voices = speechSynthesis.getVoices();
+            const frenchVoice = voices.find(v =>
+                v.lang.startsWith("fr") && !v.name.toLowerCase().includes("robot")
+            );
+        
+            if (frenchVoice) {
+                utterance.voice = frenchVoice;
+            }
+        
+            utterance.rate = 0.8;   // plus lent
+            utterance.pitch = 0.9;  // plus grave
+            utterance.volume = 1;
+        
+            speechSynthesis.cancel();
+            speechSynthesis.speak(utterance);
+        }
+                
+        // -------------------- AFFICHAGE TEXTE + VOIX --------------------
+        function showPhase(text) {
             phaseText.style.opacity = 0;
-            setTimeout(() => {{
+            speechSynthesis.getVoices();
+        
+            setTimeout(() => {
                 phaseText.innerText = text;
                 phaseText.style.opacity = 1;
-
-                if (voix && text !== "Cycle terminé") {{
-                    const u = new SpeechSynthesisUtterance(text);
-                    speechSynthesis.cancel();
-                    speechSynthesis.speak(u);
-                }}
-            }}, 200);
-        }}
+        
+                // ---- voix uniquement si autorisée ----
+                if (voix && text !== "Cycle terminé") {
+                    speak(text);
+                }
+        
+            }, 200);
+        }
 
         // ---------- ANIMATION ----------
         function animate(timestamp) {{
