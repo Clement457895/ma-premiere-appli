@@ -4,75 +4,62 @@
 import streamlit as st
 import streamlit.components.v1 as components
 
-
 # =========================================================
 # -------------------- TITRE ------------------------------
 # =========================================================
 st.title("🫁 Cohérence cardiaque")
 
-
 # =========================================================
-# -------------------- ONGLETS ----------------------------
+# -------------------- ONGLET -----------------------------
 # =========================================================
-tab_respiration, tab_parametres = st.tabs(
-    ["🌬️ Respiration", "⚙️ Paramètres"]
+onglet_respiration, onglet_parametres = st.tabs(
+    ["Respiration", "Paramètres"]
 )
-
 
 # =========================================================
 # -------------------- PARAMÈTRES -------------------------
 # =========================================================
-with tab_parametres:
-    st.header("⚙️ Réglages")
+with onglet_parametres:
+    st.header("⚙️ Paramètres")
 
-    # =====================================================
-    # -------------------- TEMPS --------------------------
-    # =====================================================
+    # ---------- TEMPS ----------
     inspire = st.number_input("Inspiration (secondes)", 1, 10, 4)
     retenue = st.number_input("Rétention (secondes)", 0, 10, 2)
     expire = st.number_input("Expiration (secondes)", 1, 10, 6)
 
-    # =====================================================
-    # -------------------- APPARENCE ----------------------
-    # =====================================================
-    taille = st.slider("Taille du rond", 100, 220, 150)
+    # ---------- APPARENCE ----------
+    taille = st.slider("Taille du rond", 80, 220, 150)
     couleur = st.color_picker("Couleur du rond", "#00AAFF")
 
-    # =====================================================
-    # -------------------- DURÉE --------------------------
-    # =====================================================
+    # ---------- DURÉE ----------
     duree_totale = st.number_input("Durée (minutes)", 1, 60, 5)
 
-    # =====================================================
-    # -------------------- AUDIO --------------------------
-    # =====================================================
-    audio_on = st.checkbox("🔊 Activer les sons MP3", True)
+    # ---------- AUDIO ----------
+    audio_on = st.checkbox("🔊 Sons MP3", value=True)
 
-    # =====================================================
-    # -------------------- CYCLES -------------------------
-    # =====================================================
+    # ---------- CYCLES ----------
     cycles = int(duree_totale * 60 // (inspire + retenue + expire))
-
 
 # =========================================================
 # -------------------- RESPIRATION ------------------------
 # =========================================================
-with tab_respiration:
+with onglet_respiration:
+    st.header("🌬️ Exercice")
 
     html_code = f"""
     <style>
     /* ================================================= */
-    /* -------------------- ZONE ------------------------ */
+    /* ---------------- ZONE FIXE ---------------------- */
     /* ================================================= */
     #zone {{
-        height: 300px;
+        height: 320px;
         display: flex;
         justify-content: center;
         align-items: center;
     }}
 
     /* ================================================= */
-    /* -------------------- CERCLE ---------------------- */
+    /* ---------------- CERCLE ------------------------- */
     /* ================================================= */
     #cercle {{
         width: {taille}px;
@@ -88,34 +75,35 @@ with tab_respiration:
     }}
 
     #phase {{
-        transition: opacity 0.3s;
+        opacity: 0;
+        transition: opacity 0.4s ease-in-out;
     }}
 
     /* ================================================= */
-    /* -------------------- CONTROLES ------------------- */
+    /* ---------------- CONTROLES ---------------------- */
     /* ================================================= */
     .controls {{
         display: flex;
         justify-content: center;
-        gap: 20px;
         margin-top: 20px;
+        gap: 20px;
     }}
 
     button {{
-        font-size: 26px;
-        padding: 10px 18px;
+        font-size: 24px;
+        padding: 10px 20px;
     }}
     </style>
 
     <!-- ================================================= -->
-    <!-- -------------------- AUDIO ---------------------- -->
+    <!-- ---------------- AUDIO -------------------------- -->
     <!-- ================================================= -->
     <audio id="snd-inspire" src="sounds/inspire%20(Roxanne).mp3"></audio>
     <audio id="snd-retiens" src="sounds/retiens%20(Roxanne).mp3"></audio>
     <audio id="snd-expire" src="sounds/expire%20(Roxanne).mp3"></audio>
 
     <!-- ================================================= -->
-    <!-- -------------------- VISUEL --------------------- -->
+    <!-- ---------------- VISUEL ------------------------- -->
     <!-- ================================================= -->
     <div id="zone">
         <div id="cercle">
@@ -124,128 +112,151 @@ with tab_respiration:
     </div>
 
     <!-- ================================================= -->
-    <!-- -------------------- CONTROLES ------------------ -->
+    <!-- ---------------- CONTROLES ----------------------- -->
     <!-- ================================================= -->
     <div class="controls">
-        <button onclick="playPause()">⏯️</button>
-        <button onclick="stop()">⏹️</button>
+        <button onclick="toggle()">⏯️ Pause/Play</button>
+        <button onclick="stopAll()">⏹️ Arrêter</button>
     </div>
 
     <script>
     // =================================================
-    // -------------------- VARIABLES -------------------
+    // ---------------- VARIABLES ----------------------
     // =================================================
     const inspire = {inspire} * 1000;
     const retenue = {retenue} * 1000;
     const expire = {expire} * 1000;
-    const cyclesMax = {cycles};
+    const cycles = {cycles};
     const audioOn = {str(audio_on).lower()};
 
     const cercle = document.getElementById("cercle");
     const phaseText = document.getElementById("phase");
 
-    const sounds = {{
-        inspire: document.getElementById("snd-inspire"),
-        retenue: document.getElementById("snd-retiens"),
-        expire: document.getElementById("snd-expire"),
-    }};
+    const sndInspire = document.getElementById("snd-inspire");
+    const sndRetiens = document.getElementById("snd-retiens");
+    const sndExpire = document.getElementById("snd-expire");
 
     let running = false;
-    let phase = "inspire";
+    let audioUnlocked = false;
+
     let cycle = 0;
+    let phase = "inspire";
     let startTime = null;
+    let scaleFrom = 1;
+    let scaleTo = 1.4;
 
     // =================================================
-    // -------------------- AUDIO -----------------------
+    // ---------------- AUDIO --------------------------
     // =================================================
     function playSound(name) {{
-        if (!audioOn) return;
-        Object.values(sounds).forEach(s => s.pause());
-        sounds[name].currentTime = 0;
-        sounds[name].play();
+        if (!audioOn || !audioUnlocked) return;
+
+        sndInspire.pause();
+        sndRetiens.pause();
+        sndExpire.pause();
+
+        if (name === "inspire") {{
+            sndInspire.currentTime = 0;
+            sndInspire.play();
+        }}
+        if (name === "retenue") {{
+            sndRetiens.currentTime = 0;
+            sndRetiens.play();
+        }}
+        if (name === "expire") {{
+            sndExpire.currentTime = 0;
+            sndExpire.play();
+        }}
     }}
 
     // =================================================
-    // -------------------- TEXTE -----------------------
+    // ---------------- TEXTE --------------------------
     // =================================================
-    function setPhase(text, sound=null) {{
-        phaseText.innerText = text;
-        if (sound) playSound(sound);
+    function show(text, sound) {{
+        phaseText.style.opacity = 0;
+        setTimeout(() => {{
+            phaseText.innerText = text;
+            phaseText.style.opacity = 1;
+            if (sound) playSound(sound);
+        }}, 200);
     }}
 
     // =================================================
-    // -------------------- ANIMATION -------------------
+    // ---------------- ANIMATION ----------------------
     // =================================================
-    function animate(timestamp) {{
+    function animate(ts) {{
         if (!running) {{
             requestAnimationFrame(animate);
             return;
         }}
 
-        if (!startTime) startTime = timestamp;
+        if (!startTime) startTime = ts;
 
         const duration =
             phase === "inspire" ? inspire :
             phase === "retenue" ? retenue :
             expire;
 
-        const progress = Math.min((timestamp - startTime) / duration, 1);
+        const progress = Math.min((ts - startTime) / duration, 1);
+        const eased = -(Math.cos(Math.PI * progress) - 1) / 2;
 
-        let scale =
-            phase === "inspire" ? 1 + 0.4 * progress :
-            phase === "expire" ? 1.4 - 0.4 * progress :
-            1.4;
-
-        cercle.style.transform = `scale(${scale})`;
+        const scale = scaleFrom + (scaleTo - scaleFrom) * eased;
+        cercle.style.transform = "scale(" + scale + ")";
 
         if (progress >= 1) {{
-            startTime = timestamp;
-
             if (phase === "inspire") {{
-                phase = retenue > 0 ? "retenue" : "expire";
-                setPhase(phase === "retenue" ? "Retiens" : "Expire", phase);
+                phase = "retenue";
+                scaleFrom = 1.4;
+                scaleTo = 1.4;
+                if (retenue > 0) show("Retiens", "retenue");
             }}
             else if (phase === "retenue") {{
                 phase = "expire";
-                setPhase("Expire", "expire");
+                scaleFrom = 1.4;
+                scaleTo = 1;
+                show("Expire", "expire");
             }}
             else {{
                 cycle++;
-                if (cycle >= cyclesMax) {{
+                if (cycle >= cycles) {{
+                    show("Terminé", null);
                     running = false;
-                    setPhase("Terminé");
                     return;
                 }}
                 phase = "inspire";
-                setPhase("Inspire", "inspire");
+                scaleFrom = 1;
+                scaleTo = 1.4;
+                show("Inspire", "inspire");
             }}
+            startTime = ts;
         }}
 
         requestAnimationFrame(animate);
     }}
 
     // =================================================
-    // -------------------- CONTROLES -------------------
+    // ---------------- CONTROLES ----------------------
     // =================================================
-    function playPause() {{
+    function toggle() {{
         running = !running;
-        if (running && !startTime) {{
-            setPhase("Inspire", "inspire");
+
+        // 🔓 Débloque le son au premier clic
+        if (!audioUnlocked) {{
+            audioUnlocked = true;
+            show("Inspire", "inspire");
         }}
     }}
 
-    function stop() {{
+    function stopAll() {{
         running = false;
-        phase = "inspire";
-        cycle = 0;
-        startTime = null;
         cercle.style.transform = "scale(1)";
-        setPhase("Prêt");
+        phaseText.innerText = "Arrêté";
     }}
 
     // =================================================
-    // -------------------- INIT ------------------------
+    // ---------------- INIT ---------------------------
     // =================================================
+    show("Prêt", null);
     requestAnimationFrame(animate);
     </script>
     """
