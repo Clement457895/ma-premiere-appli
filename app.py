@@ -99,9 +99,9 @@ with onglet_respiration:
         }
 
         <!-- ---------- AUDIO ---------- -->
-        <audio id="snd-inspire" src="sounds/inspire.mp3"></audio>
-        <audio id="snd-retiens" src="sounds/retiens.mp3"></audio>
-        <audio id="snd-expire" src="sounds/expire.mp3"></audio>
+        <audio id="snd-inspire" src="sounds/inspire (Roxanne).mp3"></audio>
+        <audio id="snd-retiens" src="sounds/retiens (Roxanne).mp3"></audio>
+        <audio id="snd-expire" src="sounds/expire (Roxanne).mp3"></audio>
 
         <!-- ---------- VISUEL ---------- -->
         <div id="zone">
