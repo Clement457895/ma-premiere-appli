@@ -35,7 +35,7 @@ with onglet_parametres:
     duree_totale = st.number_input("Durée (minutes)", 1, 60, 5)
 
     # ---------- Audio ----------
-    audio_on = st.checkbox("🔊 Voix (audio réel)", value=True)
+    audio_on = st.checkbox("🔊 Sons (mp3)", value=True)
 
     # ---------- Cycles ----------
     cycles = int(duree_totale * 60 // (inspire + retenue + expire))
@@ -46,7 +46,7 @@ with onglet_parametres:
 with onglet_respiration:
     st.header("🌬️ Exercice")
 
-    # ---------- Boutons ----------
+    # ---------- Bouton ----------
     start = st.button("▶️ Démarrer")
 
     if start:
@@ -87,21 +87,11 @@ with onglet_respiration:
         }}
         </style>
 
-        // ---------- SONS ----------
-        function playSound(phase) {
-            if (!sonsActifs) return;
-        
-            let audio = document.getElementById("sound-" + phase);
-            if (audio) {
-                audio.currentTime = 0;
-                audio.play();
-            }
-        }
-
         <!-- ---------- AUDIO ---------- -->
-        <audio id="snd-inspire" src="sounds/inspire (Roxanne).mp3"></audio>
-        <audio id="snd-retiens" src="sounds/retiens (Roxanne).mp3"></audio>
-        <audio id="snd-expire" src="sounds/expire (Roxanne).mp3"></audio>
+        <audio id="snd-inspire" src="sounds/inspire%20(Roxanne).mp3"></audio>
+        <audio id="snd-retiens" src="sounds/retiens%20(Roxanne).mp3"></audio>
+        <audio id="snd-expire" src="sounds/expire%20(Roxanne).mp3"></audio>
+
 
         <!-- ---------- VISUEL ---------- -->
         <div id="zone">
@@ -117,7 +107,9 @@ with onglet_respiration:
         </div>
 
         <script>
-        // ---------- VARIABLES ----------
+        // =================================================
+        // ---------------- VARIABLES ----------------------
+        // =================================================
         const inspire = {inspire} * 1000;
         const retenue = {retenue} * 1000;
         const expire = {expire} * 1000;
@@ -138,29 +130,45 @@ with onglet_respiration:
         let scaleFrom = 1;
         let scaleTo = 1.4;
 
-        // ---------- AUDIO ----------
+        // =================================================
+        // ---------------- AUDIO --------------------------
+        // =================================================
         function playSound(name) {{
             if (!audioOn) return;
+
             sndInspire.pause();
             sndRetiens.pause();
             sndExpire.pause();
 
-            if (name === "inspire") sndInspire.play();
-            if (name === "retenue") sndRetiens.play();
-            if (name === "expire") sndExpire.play();
+            if (name === "inspire") {{
+                sndInspire.currentTime = 0;
+                sndInspire.play();
+            }}
+            if (name === "retenue") {{
+                sndRetiens.currentTime = 0;
+                sndRetiens.play();
+            }}
+            if (name === "expire") {{
+                sndExpire.currentTime = 0;
+                sndExpire.play();
+            }}
         }}
 
-        // ---------- TEXTE ----------
+        // =================================================
+        // ---------------- TEXTE --------------------------
+        // =================================================
         function show(text, sound) {{
             phaseText.style.opacity = 0;
             setTimeout(() => {{
                 phaseText.innerText = text;
                 phaseText.style.opacity = 1;
-                playSound(sound);
+                if (sound) playSound(sound);
             }}, 200);
         }}
 
-        // ---------- ANIMATION ----------
+        // =================================================
+        // ---------------- ANIMATION ----------------------
+        // =================================================
         function animate(ts) {{
             if (!running) {{
                 requestAnimationFrame(animate);
@@ -168,6 +176,7 @@ with onglet_respiration:
             }}
 
             if (!startTime) startTime = ts;
+
             const duration =
                 phase === "inspire" ? inspire :
                 phase === "retenue" ? retenue :
@@ -204,18 +213,26 @@ with onglet_respiration:
                 }}
                 startTime = ts;
             }}
+
             requestAnimationFrame(animate);
         }}
 
-        // ---------- CONTROLES ----------
-        function toggle() {{ running = !running; }}
+        // =================================================
+        // ---------------- CONTROLES ----------------------
+        // =================================================
+        function toggle() {{
+            running = !running;
+        }}
+
         function stopAll() {{
             running = false;
             cercle.style.transform = "scale(1)";
             phaseText.innerText = "Arrêté";
         }}
 
-        // ---------- START ----------
+        // =================================================
+        // ---------------- START --------------------------
+        // =================================================
         show("Inspire", "inspire");
         requestAnimationFrame(animate);
         </script>
